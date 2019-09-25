@@ -1,0 +1,105 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              04/09/2019 10:27:31 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OMF2 OPTIMIZE(8,SPEED) BROWSE DEBUG PRINT(.\Listings\main.lst) TA
+                    -BS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          
+   3          
+   4          #define Led_ON P0_0 = 0       //zapala diode poprzez podanie 0 na P0_0
+   5          #define Led_OFF P0_0 = 1      //gasi diode poprzez podanie 1 na P0_0
+   6          //  wiersz  kolumna
+   7          // 7,6,5,4  3 2 1 0
+   8          // 1 1 1 0  1 1 1 1   0xEF
+   9          // 1 1 0 1  1 1 1 1   0xDF
+  10          // 1 0 1 1  1 1 1 1   0xBF
+  11          // 0 1 1 1  1 1 1 1   0x7F
+  12          unsigned char code Tab[] = {0xEF,0xDF,0xBF,0x7F};
+  13          
+  14          
+  15          unsigned char code Przycisk_7 = 0xB7;   //przycisk 7 na klawiaturze
+  16          
+  17          unsigned char code Kombinacja[] = {0x7B, 0xE7, 0xEB};  //Kombinacja 012
+  18          
+  19          void wait(void)
+  20          {
+  21   1        unsigned int L;
+  22   1        for(L=0; L<5000; L++)
+  23   1        {;}
+  24   1      }
+  25          
+  26          void mrugniecia(unsigned char ile)
+  27          {
+  28   1        unsigned char i=0;
+  29   1          for(i=0; i<ile; i++)
+  30   1          {
+  31   2            Led_ON;
+  32   2            wait();
+  33   2            Led_OFF;
+  34   2            wait();
+  35   2          }
+  36   1      }
+  37            
+  38          
+  39          void main (void)
+  40            {
+  41   1          volatile unsigned char data ind = 0;
+  42   1          unsigned char good = 0;
+  43   1          
+  44   1          for(;;)
+  45   1            {
+  46   2              P2 = Tab[ind];
+  47   2              
+  48   2              if(P2 == Przycisk_7) mrugniecia(3);
+  49   2              
+  50   2              if(P2 == Kombinacja[0])
+  51   2              {
+  52   3                good = 1;
+  53   3                while(P2 == Kombinacja[0]);
+  54   3              }
+C51 COMPILER V9.59.0.0   MAIN                                                              04/09/2019 10:27:31 PAGE 2   
+
+  55   2              if(P2 == Kombinacja[1])
+  56   2              {
+  57   3                if(good == 1) good = 2;
+  58   3                else good = 0;
+  59   3                while(P2 == Kombinacja[1]);
+  60   3              }
+  61   2              if(P2 == Kombinacja[2])
+  62   2              {
+  63   3                if(good == 2) mrugniecia(5);
+  64   3                good = 0;
+  65   3                while(P2 == Kombinacja[2]);
+  66   3              }
+  67   2              
+  68   2              
+  69   2              
+  70   2              
+  71   2                    
+  72   2              ind++;
+  73   2              if (ind == 4) {ind = 0;}
+  74   2            }
+  75   1        }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    153    ----
+   CONSTANT SIZE    =      8    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
